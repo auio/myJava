@@ -2,7 +2,12 @@ package net.auio.utils;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 
@@ -60,42 +65,25 @@ public class ReflectUtils {
 	 * @return
 	 */
 	public static <T> Object getValue(T bean,String name){
-		Field field = getField(bean.getClass(), name);
 		try {
+			Field field = bean.getClass().getDeclaredField(name);
+			field.setAccessible(true);
 			return field.get(bean);
-		} catch (IllegalArgumentException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		}
+		} 
 		return null;
 	}
 	public static <T> void setValue(T bean,String name,Object value){
-		Field field = getField(bean.getClass(), name);
 		try {
+			Field field = bean.getClass().getDeclaredField(name);
+			field.setAccessible(true);
 			field.set(bean,value);
-		} catch (IllegalArgumentException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		}
+		} 
 	}
-	
-	/**
-	 * 获取属性域
-	 * @param cls
-	 * @param name
-	 * @return
-	 */
-	public static Field getField(Class<?> cls,String name){
-		 Field[] fs = cls.getDeclaredFields();  
-	     for(int i = 0 ; i < fs.length; i++){
-	    	 Field f = fs[i];  
-	         f.setAccessible(true);
-	    	 if(f.getName().equals(name))return f;
-	     }
-	     return null;
-	}
+
 	
 	
     public static void main(String[] args){
@@ -104,6 +92,9 @@ public class ReflectUtils {
     	setValue(aTest, "age", 11);
     	System.out.println(getValue(aTest, "age"));
     	System.out.println("sdfgf");
+    	for(Method m:BigDecimal.class.getDeclaredMethods()){
+    		System.out.println(m.getName());
+    	}
 
     }
 }
